@@ -22,12 +22,19 @@ import java.nio.charset.StandardCharsets;
 public class MainActivity extends Activity {
  EditText id,data,table; TextView result; Spinner ids,seasons; LinearLayout page; FrameLayout frame; ImageView image; View veil; boolean selectionReady=false; int seasonIndex=0;
  int currentId(){return Integer.parseInt(id.getText().toString().trim().replaceFirst("(?i)^0x",""),16);}
- void styleInput(EditText field){
+ GradientDrawable translucentField(){
   GradientDrawable bg=new GradientDrawable();
-  bg.setColor(Color.argb(204,255,255,255));
+  bg.setColor(Color.argb(179,255,255,255));
   bg.setCornerRadius(16f*getResources().getDisplayMetrics().density);
   bg.setStroke((int)(1.5f*getResources().getDisplayMetrics().density),Color.argb(220,155,184,205));
-  field.setBackground(bg);
+  return bg;
+ }
+ void styleInput(EditText field){
+  GradientDrawable bg=new GradientDrawable();
+  bg.setColor(Color.argb(179,255,255,255));
+  bg.setCornerRadius(16f*getResources().getDisplayMetrics().density);
+  bg.setStroke((int)(1.5f*getResources().getDisplayMetrics().density),Color.argb(220,155,184,205));
+  field.setBackground(translucentField());
   field.setTextColor(Color.rgb(18,31,44));
   field.setHintTextColor(Color.rgb(90,105,117));
   field.setHighlightColor(Color.argb(85,39,139,195));
@@ -38,7 +45,20 @@ public class MainActivity extends Activity {
  Button button(String s,Runnable r){Button b=new Button(this);b.setText(s);page.addView(b);b.setOnClickListener(v->{try{r.run();}catch(Exception e){result.setText("Ошибка: "+e.getMessage());}});return b;}
  void save(){StringBuilder b=new StringBuilder();for(Map.Entry<Integer,int[]> e:MQBCrc.customTables().entrySet())b.append(Integer.toHexString(e.getKey())).append('=').append(MQBCrc.tableHex(e.getValue())).append('\n');getPreferences(0).edit().putString("tables",b.toString()).apply();}
  void load(){MQBCrc.clearCustom();for(String l:getPreferences(0).getString("tables","").split("\\n")){String[] p=l.split("=",2);if(p.length==2)try{MQBCrc.put(Integer.parseInt(p[0],16),MQBCrc.parseTable(p[1]));}catch(Exception ignored){}}}
- void refresh(){TreeSet<Integer> all=new TreeSet<>(MQBCrc.builtinTables().keySet());all.addAll(MQBCrc.customTables().keySet());ArrayList<Integer> values=new ArrayList<>(all);ArrayList<String> names=new ArrayList<>();for(int x:values)names.add(String.format(Locale.ROOT,"0x%X%s",x,MQBCrc.customTables().containsKey(x)?" ★":""));ids.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,names));ids.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){public void onNothingSelected(android.widget.AdapterView<?> p){}public void onItemSelected(android.widget.AdapterView<?> p,View v,int pos,long n){if(!selectionReady||pos>=values.size())return;int x=values.get(pos);id.setText(String.format(Locale.ROOT,"0x%X",x));if(table!=null){int[] selected=MQBCrc.get(x);table.setText(selected==null?"":MQBCrc.tableHex(selected));}}});}
+ void refresh(){TreeSet<Integer> all=new TreeSet<>(MQBCrc.builtinTables().keySet());all.addAll(MQBCrc.customTables().keySet());ArrayList<Integer> values=new ArrayList<>(all);ArrayList<String> names=new ArrayList<>();for(int x:values)names.add(String.format(Locale.ROOT,"0x%X%s",x,MQBCrc.customTables().containsKey(x)?" ★":""));ArrayAdapter<String> adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,names){
+  @Override public View getView(int position,View convertView,android.view.ViewGroup parent){
+   TextView t=(TextView)super.getView(position,convertView,parent);
+   t.setTextColor(Color.rgb(18,31,44));t.setTextSize(16);t.setPadding(18,14,18,14);
+   return t;
+  }
+  @Override public View getDropDownView(int position,View convertView,android.view.ViewGroup parent){
+   TextView t=(TextView)super.getDropDownView(position,convertView,parent);
+   t.setTextColor(Color.rgb(18,31,44));t.setBackgroundColor(Color.WHITE);t.setPadding(18,14,18,14);
+   return t;
+  }
+ };
+ adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+ ids.setAdapter(adapter);ids.setBackground(translucentField());ids.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){public void onNothingSelected(android.widget.AdapterView<?> p){}public void onItemSelected(android.widget.AdapterView<?> p,View v,int pos,long n){if(!selectionReady||pos>=values.size())return;int x=values.get(pos);id.setText(String.format(Locale.ROOT,"0x%X",x));if(table!=null){int[] selected=MQBCrc.get(x);table.setText(selected==null?"":MQBCrc.tableHex(selected));}}});}
  void theme(int choice){int season=choice;if(season==0){int m=Calendar.getInstance().get(Calendar.MONTH);season=(m==11||m<=1)?1:m<=4?2:m<=7?3:4;}int[][] colors={{0,0},{0xFF0C274F,0xFFE6F5FF},{0xFF478CB0,0xFFE4F5DD},{0xFF3D94BB,0xFFFFE6A8},{0xFF8A543E,0xFFFFD9A5}};GradientDrawable d=new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,new int[]{colors[season][0],colors[season][1]});frame.setBackground(d); seasonIndex=season; boolean photo=getPreferences(0).getBoolean("photo",true); image.setVisibility(photo?View.VISIBLE:View.GONE); veil.setVisibility(photo?View.VISIBLE:View.GONE);veil.setBackgroundColor(Color.argb(getPreferences(0).getInt("opacity",70)*255/100,0,0,0));if(photo)fetchPhoto(season);}
  public
  static final String[] PHOTOS={
