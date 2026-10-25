@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
  }
  void openCanList(){
   if(canPopup!=null&&canPopup.isShowing()){canPopup.dismiss();return;}
-  LinearLayout holder=new LinearLayout(this);holder.setOrientation(1);holder.setBackgroundColor(Color.WHITE);
+  LinearLayout holder=new LinearLayout(this);holder.setOrientation(1);holder.setBackgroundColor(Color.TRANSPARENT);
   ScrollView sc=new ScrollView(this);sc.addView(holder);
   int dp=(int)getResources().getDisplayMetrics().density;
   for(int x:canValues){
@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
   }
   int width=selectedCan.getWidth();
   canPopup=new PopupWindow(sc,width,Math.min(310*dp,canValues.size()*50*dp),true);
-  canPopup.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+  canPopup.setBackgroundDrawable(new ColorDrawable(Color.argb(179,255,255,255)));
   canPopup.setOutsideTouchable(true);canPopup.setElevation(8*dp);
   canPopup.setOnDismissListener(()->arrowCan.setText("▼"));
   arrowCan.setText("▲");
@@ -187,12 +187,8 @@ public class MainActivity extends Activity {
  }
  public void onCreate(Bundle b){super.onCreate(b);load();frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));veil=new View(this);frame.addView(veil,new FrameLayout.LayoutParams(-1,-1));ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);page.setPadding(22,25,22,35);scroll.addView(page);frame.addView(scroll,new FrameLayout.LayoutParams(-1,-1));setContentView(frame);
  LinearLayout header=new LinearLayout(this);header.setOrientation(LinearLayout.HORIZONTAL);header.setGravity(Gravity.CENTER_VERTICAL);
- TextView symbol=new TextView(this);symbol.setText("MQB");symbol.setTextSize(26);symbol.setTypeface(null,android.graphics.Typeface.BOLD);
- symbol.setTextColor(Color.WHITE);symbol.setShadowLayer(5,0,2,Color.rgb(15,89,141));
- header.addView(symbol);
- TextView crctitle=new TextView(this);crctitle.setText(" CRC");crctitle.setTextSize(27);
- crctitle.setTypeface(null,android.graphics.Typeface.BOLD);crctitle.setTextColor(Color.rgb(47,195,255));
- header.addView(crctitle);page.addView(header);
+ TextView title=new TextView(this);title.setText("VOLKSWAGEN\\nMQB CRC");title.setTextSize(23);title.setTextColor(Color.WHITE);
+ header.addView(title,new LinearLayout.LayoutParams(-1,-2));page.addView(header);
  button("⚙ Настройки / О программе",()->showSettings()); theme(getPreferences(0).getInt("season",0));
  label("Список CAN ID");
  FrameLayout selectFrame=new FrameLayout(this);
