@@ -201,7 +201,7 @@ public class MainActivity extends Activity {
  emblem.setImageResource(R.drawable.vw_header_emblem);
  int emDp=(int)(54*getResources().getDisplayMetrics().density);
  header.addView(emblem,new LinearLayout.LayoutParams(emDp,emDp));
- TextView title=new TextView(this);title.setText("VOLKSWAGEN\nMQB CRC");title.setTextSize(23);title.setTextColor(Color.WHITE);
+ TextView title=new TextView(this);title.setText("VOLKSWAGEN MQB\nCRC CALCULATE");title.setTextSize(20);title.setTextColor(Color.WHITE);
  title.setPadding((int)(12*getResources().getDisplayMetrics().density),0,0,0);
  header.addView(title,new LinearLayout.LayoutParams(0,-2,1));FrameLayout.LayoutParams headerParams=new FrameLayout.LayoutParams(-1,headerHeight,Gravity.TOP);frame.addView(header,headerParams);
  button("⚙ Настройки / О программе",()->showSettings()); theme(getPreferences(0).getInt("season",0));
