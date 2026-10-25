@@ -169,7 +169,17 @@ public class MainActivity extends Activity {
  public void onCreate(Bundle b){super.onCreate(b);load();frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));veil=new View(this);frame.addView(veil,new FrameLayout.LayoutParams(-1,-1));ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);page.setPadding(22,25,22,35);scroll.addView(page);frame.addView(scroll,new FrameLayout.LayoutParams(-1,-1));setContentView(frame);
  TextView title=new TextView(this);title.setText("VOLKSWAGEN MQB CRC");title.setTextSize(25);title.setTextColor(Color.WHITE);page.addView(title);
  button("⚙ Настройки / О программе",()->showSettings()); theme(getPreferences(0).getInt("season",0));
- label("Список CAN ID");ids=new Spinner(this);page.addView(ids);
+ label("Список CAN ID");ids=new Spinner(this);
+ FrameLayout selectFrame=new FrameLayout(this);
+ selectFrame.addView(ids,new FrameLayout.LayoutParams(-1,-2));
+ TextView arrow=new TextView(this);
+ arrow.setText("▼");arrow.setTextSize(18);arrow.setTextColor(Color.rgb(18,31,44));
+ arrow.setGravity(Gravity.CENTER);
+ int dp=(int)(getResources().getDisplayMetrics().density);
+ FrameLayout.LayoutParams arrowParams=new FrameLayout.LayoutParams(48*dp,-1,Gravity.RIGHT|Gravity.CENTER_VERTICAL);
+ selectFrame.addView(arrow,arrowParams);
+ arrow.setOnClickListener(v->ids.performClick());
+ page.addView(selectFrame);
  label("CAN ID (HEX)");id=new EditText(this);id.setSingleLine(true);id.setText("0x122");styleInput(id);page.addView(id);
  label("CAN данные (2–8 байт HEX)");data=new EditText(this);data.setSingleLine(true);data.setText("00 01 02 03 04 05 06 07");styleInput(data);page.addView(data);
  result=new TextView(this);result.setTextSize(18);result.setTextColor(Color.WHITE);result.setTextIsSelectable(true);
