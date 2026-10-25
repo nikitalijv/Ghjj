@@ -189,11 +189,11 @@ public class MainActivity extends Activity {
  ).setPositiveButton("OK",null).show());
   dialog.show();
  }
- public void onCreate(Bundle b){super.onCreate(b);load();frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));veil=new View(this);frame.addView(veil,new FrameLayout.LayoutParams(-1,-1));ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);page.setPadding(22,25,22,35);scroll.addView(page);frame.addView(scroll,new FrameLayout.LayoutParams(-1,-1));setContentView(frame);
+ public void onCreate(Bundle b){super.onCreate(b);load();frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));int headerHeight=(int)(82*getResources().getDisplayMetrics().density);veil=new View(this);FrameLayout.LayoutParams veilParams=new FrameLayout.LayoutParams(-1,-1);veilParams.topMargin=headerHeight;frame.addView(veil,veilParams);ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);page.setPadding(22,25,22,35);scroll.addView(page);FrameLayout.LayoutParams contentParams=new FrameLayout.LayoutParams(-1,-1);contentParams.topMargin=headerHeight;frame.addView(scroll,contentParams);setContentView(frame);
  LinearLayout header=new LinearLayout(this);header.setOrientation(LinearLayout.HORIZONTAL);header.setGravity(Gravity.CENTER_VERTICAL);
  GradientDrawable headerBackground=new GradientDrawable();
- headerBackground.setColor(Color.argb(153,0,0,0)); // 40% transparency (60% opacity), independent of seasonal overlay
- headerBackground.setCornerRadius(12f*getResources().getDisplayMetrics().density);
+ headerBackground.setColor(Color.argb(102,0,0,0)); // Independent fixed 40% black darkening; global veil starts below header
+ headerBackground.setCornerRadius(0f); // Full-width uninterrupted top strip
  header.setBackground(headerBackground);
  int headerPadding=(int)(12*getResources().getDisplayMetrics().density);
  header.setPadding(headerPadding,headerPadding,headerPadding,headerPadding);
@@ -203,7 +203,7 @@ public class MainActivity extends Activity {
  header.addView(emblem,new LinearLayout.LayoutParams(emDp,emDp));
  TextView title=new TextView(this);title.setText("VOLKSWAGEN\nMQB CRC");title.setTextSize(23);title.setTextColor(Color.WHITE);
  title.setPadding((int)(12*getResources().getDisplayMetrics().density),0,0,0);
- header.addView(title,new LinearLayout.LayoutParams(0,-2,1));page.addView(header);
+ header.addView(title,new LinearLayout.LayoutParams(0,-2,1));FrameLayout.LayoutParams headerParams=new FrameLayout.LayoutParams(-1,headerHeight,Gravity.TOP);frame.addView(header,headerParams);
  button("⚙ Настройки / О программе",()->showSettings()); theme(getPreferences(0).getInt("season",0));
  label("Список CAN ID");
  FrameLayout selectFrame=new FrameLayout(this);
