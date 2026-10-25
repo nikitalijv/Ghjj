@@ -22,6 +22,18 @@ import java.nio.charset.StandardCharsets;
 public class MainActivity extends Activity {
  EditText id,data,table; TextView result; Spinner ids,seasons; LinearLayout page; FrameLayout frame; ImageView image; View veil; boolean selectionReady=false; int seasonIndex=0;
  int currentId(){return Integer.parseInt(id.getText().toString().trim().replaceFirst("(?i)^0x",""),16);}
+ void styleInput(EditText field){
+  GradientDrawable bg=new GradientDrawable();
+  bg.setColor(Color.argb(228,255,255,255));
+  bg.setCornerRadius(16f*getResources().getDisplayMetrics().density);
+  bg.setStroke((int)(1.5f*getResources().getDisplayMetrics().density),Color.argb(220,155,184,205));
+  field.setBackground(bg);
+  field.setTextColor(Color.rgb(18,31,44));
+  field.setHintTextColor(Color.rgb(90,105,117));
+  field.setHighlightColor(Color.argb(85,39,139,195));
+  field.setPadding(18,14,18,14);
+  if(android.os.Build.VERSION.SDK_INT>=29)field.setTextCursorDrawable(new ColorDrawable(Color.rgb(12,95,151)));
+ }
  void label(String s){TextView t=new TextView(this);t.setText(s);t.setTextSize(16);t.setTextColor(Color.WHITE);t.setPadding(0,20,0,3);page.addView(t);}
  Button button(String s,Runnable r){Button b=new Button(this);b.setText(s);page.addView(b);b.setOnClickListener(v->{try{r.run();}catch(Exception e){result.setText("Ошибка: "+e.getMessage());}});return b;}
  void save(){StringBuilder b=new StringBuilder();for(Map.Entry<Integer,int[]> e:MQBCrc.customTables().entrySet())b.append(Integer.toHexString(e.getKey())).append('=').append(MQBCrc.tableHex(e.getValue())).append('\n');getPreferences(0).edit().putString("tables",b.toString()).apply();}
@@ -74,11 +86,11 @@ public class MainActivity extends Activity {
  TextView title=new TextView(this);title.setText("VOLKSWAGEN MQB CRC");title.setTextSize(25);title.setTextColor(Color.WHITE);page.addView(title);
  button("⚙ Настройки / О программе",()->showSettings()); theme(getPreferences(0).getInt("season",0));
  label("Список CAN ID");ids=new Spinner(this);page.addView(ids);
- label("CAN ID (HEX)");id=new EditText(this);id.setSingleLine(true);id.setText("0x122");page.addView(id);
- label("CAN данные (2–8 байт HEX)");data=new EditText(this);data.setSingleLine(true);data.setText("00 01 02 03 04 05 06 07");page.addView(data);
+ label("CAN ID (HEX)");id=new EditText(this);id.setSingleLine(true);id.setText("0x122");styleInput(id);page.addView(id);
+ label("CAN данные (2–8 байт HEX)");data=new EditText(this);data.setSingleLine(true);data.setText("00 01 02 03 04 05 06 07");styleInput(data);page.addView(data);
  result=new TextView(this);result.setTextSize(18);result.setTextColor(Color.WHITE);result.setTextIsSelectable(true);
  button("РАССЧИТАТЬ CRC",()->{byte[] p=MQBCrc.parseHex(data.getText().toString());int crc=MQBCrc.calculate(currentId(),p);p[0]=(byte)crc;StringBuilder s=new StringBuilder(String.format(Locale.ROOT,"CRC: %02X\nCAN кадр: ",crc));for(byte x:p)s.append(String.format(Locale.ROOT,"%02X ",x&255));result.setText(s.toString());});page.addView(result);
- label("Таблица CRC (16 HEX-байтов)");table=new EditText(this);table.setMinLines(2);table.setTextSize(14);page.addView(table);
+ label("Таблица CRC (16 HEX-байтов)");table=new EditText(this);table.setMinLines(2);table.setTextSize(14);styleInput(table);page.addView(table);
  button("ПОКАЗАТЬ ТАБЛИЦУ",()->{int[] t=MQBCrc.get(currentId());if(t==null)throw new IllegalArgumentException("Таблица не найдена");table.setText(MQBCrc.tableHex(t));});
  button("СОХРАНИТЬ / ДОБАВИТЬ CAN ID",()->{MQBCrc.put(currentId(),MQBCrc.parseTable(table.getText().toString()));save();refresh();result.setText("Сохранено");});
  button("УДАЛИТЬ ПОЛЬЗОВАТЕЛЬСКУЮ ТАБЛИЦУ",()->{MQBCrc.remove(currentId());save();refresh();result.setText("Удалено");});
