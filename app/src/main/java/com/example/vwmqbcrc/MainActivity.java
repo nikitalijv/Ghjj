@@ -72,7 +72,11 @@ public class MainActivity extends Activity {
   }
   int width=selectedCan.getWidth();
   canPopup=new PopupWindow(sc,width,Math.min(310*dp,canValues.size()*50*dp),true);
-  canPopup.setBackgroundDrawable(new ColorDrawable(Color.argb(179,255,255,255)));
+  GradientDrawable popupBackground=new GradientDrawable();
+  popupBackground.setColor(Color.argb(230,255,255,255));
+  popupBackground.setCornerRadius(14f*getResources().getDisplayMetrics().density);
+  popupBackground.setStroke(Math.max(1,(int)getResources().getDisplayMetrics().density),Color.BLACK);
+  canPopup.setBackgroundDrawable(popupBackground);
   canPopup.setOutsideTouchable(true);canPopup.setElevation(8*dp);
   canPopup.setOnDismissListener(()->arrowCan.setText("▼"));
   arrowCan.setText("▲");
