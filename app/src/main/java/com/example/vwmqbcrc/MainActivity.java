@@ -167,7 +167,13 @@ public class MainActivity extends Activity {
   dialog.show();
  }
  public void onCreate(Bundle b){super.onCreate(b);load();frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));veil=new View(this);frame.addView(veil,new FrameLayout.LayoutParams(-1,-1));ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);page.setPadding(22,25,22,35);scroll.addView(page);frame.addView(scroll,new FrameLayout.LayoutParams(-1,-1));setContentView(frame);
- TextView title=new TextView(this);title.setText("VOLKSWAGEN MQB CRC");title.setTextSize(25);title.setTextColor(Color.WHITE);page.addView(title);
+ LinearLayout header=new LinearLayout(this);header.setOrientation(LinearLayout.HORIZONTAL);header.setGravity(Gravity.CENTER_VERTICAL);
+ ImageView logo=new ImageView(this);logo.setImageResource(com.example.vwmqbcrc.R.drawable.mqb_logo);
+ int iconSize=(int)(64*getResources().getDisplayMetrics().density);
+ header.addView(logo,new LinearLayout.LayoutParams(iconSize,iconSize));
+ TextView title=new TextView(this);title.setText("VOLKSWAGEN\nMQB CRC");title.setTextSize(23);title.setTextColor(Color.WHITE);
+ title.setPadding((int)(12*getResources().getDisplayMetrics().density),0,0,0);
+ header.addView(title,new LinearLayout.LayoutParams(0,-2,1));page.addView(header);
  button("⚙ Настройки / О программе",()->showSettings()); theme(getPreferences(0).getInt("season",0));
  label("Список CAN ID");ids=new Spinner(this);
  FrameLayout selectFrame=new FrameLayout(this);
