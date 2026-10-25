@@ -64,8 +64,8 @@ public class MainActivity extends Activity {
  "Зима — Svetlana Sibiryakova, Russia, Krasnoyarsk, Tundra 2022 - SS.jpg, CC BY-SA 4.0\\n"+
  "Весна — Dr. Andreas Hugentobler, Tundra in Siberia.jpg, CC BY 2.0 DE (условная сезонная иллюстрация)\\n"+
  "Лето — Ninaras, Siberian Tundra.jpg, CC BY 4.0\\n"+
- "Осень — Arctic tundra in autumn colors near lake Lovozero in Murmansk Oblast, Russia.jpg; автор и лицензия указаны на странице Wikimedia Commons.\\n"+
- "Страницы всех снимков: https://commons.wikimedia.org/wiki/Special:FilePath/ (по названиям выше).\\n"+
+ "Осень — Artem Abdukakharov, Arctic tundra in autumn colors near lake Lovozero in Murmansk Oblast, Russia.jpg, CC BY 4.0.\\n"+
+ "Страницы лицензий и авторов: https://commons.wikimedia.org/wiki/File: (названия файлов выше). Лицензии: https://creativecommons.org/licenses/by/4.0/ ; https://creativecommons.org/licenses/by-sa/4.0/ ; https://creativecommons.org/licenses/by/2.0/de/ .\\n"+
  "Снимки могут быть обрезаны по размеру экрана, сами изображения не изменены."
  ).setPositiveButton("OK",null).show());
   dialog.show();
