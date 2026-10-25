@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
 public class MainActivity extends Activity {
  EditText id,data,table; TextView result; Spinner ids,seasons; LinearLayout page; FrameLayout frame; ImageView image; View veil; boolean selectionReady=false; int seasonIndex=0;
  int currentId(){return Integer.parseInt(id.getText().toString().trim().replaceFirst("(?i)^0x",""),16);}
- void label(String s){TextView t=new TextView(this);t.setText(s);t.setTextSize(16);t.setPadding(0,20,0,3);page.addView(t);}
+ void label(String s){TextView t=new TextView(this);t.setText(s);t.setTextSize(16);t.setTextColor(Color.WHITE);t.setPadding(0,20,0,3);page.addView(t);}
  Button button(String s,Runnable r){Button b=new Button(this);b.setText(s);page.addView(b);b.setOnClickListener(v->{try{r.run();}catch(Exception e){result.setText("Ошибка: "+e.getMessage());}});return b;}
  void save(){StringBuilder b=new StringBuilder();for(Map.Entry<Integer,int[]> e:MQBCrc.customTables().entrySet())b.append(Integer.toHexString(e.getKey())).append('=').append(MQBCrc.tableHex(e.getValue())).append('\n');getPreferences(0).edit().putString("tables",b.toString()).apply();}
  void load(){MQBCrc.clearCustom();for(String l:getPreferences(0).getString("tables","").split("\\n")){String[] p=l.split("=",2);if(p.length==2)try{MQBCrc.put(Integer.parseInt(p[0],16),MQBCrc.parseTable(p[1]));}catch(Exception ignored){}}}
@@ -47,9 +47,9 @@ public class MainActivity extends Activity {
  }
  void showSettings(){
   ScrollView sc=new ScrollView(this);LinearLayout content=new LinearLayout(this);content.setOrientation(1);content.setPadding(30,20,30,15);sc.addView(content);
-  TextView modeLabel=new TextView(this);modeLabel.setText("Фон");content.addView(modeLabel);
+  TextView modeLabel=new TextView(this);modeLabel.setText("Фон");modeLabel.setTextColor(Color.BLACK);content.addView(modeLabel);
   Spinner mode=new Spinner(this);mode.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,new String[]{"Фотография","Градиент"}));mode.setSelection(getPreferences(0).getBoolean("photo",true)?0:1);content.addView(mode);
-  TextView seasonLabel=new TextView(this);seasonLabel.setText("Время года");content.addView(seasonLabel);
+  TextView seasonLabel=new TextView(this);seasonLabel.setText("Время года");seasonLabel.setTextColor(Color.BLACK);content.addView(seasonLabel);
   Spinner ss=new Spinner(this);ss.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,new String[]{"Автоматически","Зима","Весна","Лето","Осень"}));ss.setSelection(getPreferences(0).getInt("season",0));content.addView(ss);
   TextView opacityLabel=new TextView(this);opacityLabel.setText("Затемнение фотографии: "+getPreferences(0).getInt("opacity",70)+"%");content.addView(opacityLabel);
   SeekBar opacity=new SeekBar(this);opacity.setMax(100);opacity.setProgress(getPreferences(0).getInt("opacity",70));content.addView(opacity);
