@@ -189,7 +189,14 @@ public class MainActivity extends Activity {
  ).setPositiveButton("OK",null).show());
   dialog.show();
  }
- public void onCreate(Bundle b){super.onCreate(b);load();frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));int headerHeight=(int)(82*getResources().getDisplayMetrics().density);veil=new View(this);FrameLayout.LayoutParams veilParams=new FrameLayout.LayoutParams(-1,-1);veilParams.topMargin=headerHeight;frame.addView(veil,veilParams);ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);page.setPadding(22,25,22,35);scroll.addView(page);FrameLayout.LayoutParams contentParams=new FrameLayout.LayoutParams(-1,-1);contentParams.topMargin=headerHeight;frame.addView(scroll,contentParams);setContentView(frame);
+ public void onCreate(Bundle b){super.onCreate(b);load();
+ // Let the background photo extend into the transparent navigation-bar area.
+ getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+ getWindow().setNavigationBarColor(Color.TRANSPARENT);
+ if(android.os.Build.VERSION.SDK_INT>=29)getWindow().getAttributes().layoutInDisplayCutoutMode=android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+ frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));int headerHeight=(int)(82*getResources().getDisplayMetrics().density);veil=new View(this);FrameLayout.LayoutParams veilParams=new FrameLayout.LayoutParams(-1,-1);veilParams.topMargin=headerHeight;frame.addView(veil,veilParams);ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);int navId=getResources().getIdentifier("navigation_bar_height","dimen","android");
+ int navHeight=navId>0?getResources().getDimensionPixelSize(navId):0;
+ page.setPadding(22,25,22,35+navHeight);scroll.addView(page);FrameLayout.LayoutParams contentParams=new FrameLayout.LayoutParams(-1,-1);contentParams.topMargin=headerHeight;frame.addView(scroll,contentParams);setContentView(frame);
  LinearLayout header=new LinearLayout(this);header.setOrientation(LinearLayout.HORIZONTAL);header.setGravity(Gravity.CENTER_VERTICAL);
  GradientDrawable headerBackground=new GradientDrawable();
  headerBackground.setColor(Color.argb(102,0,0,0)); // Independent fixed 40% black darkening; global veil starts below header
@@ -204,7 +211,8 @@ public class MainActivity extends Activity {
  TextView title=new TextView(this);title.setText("VOLKSWAGEN MQB\nCRC CALCULATE");title.setTextSize(20);title.setTextColor(Color.WHITE);
  title.setPadding((int)(12*getResources().getDisplayMetrics().density),0,0,0);
  header.addView(title,new LinearLayout.LayoutParams(0,-2,1));FrameLayout.LayoutParams headerParams=new FrameLayout.LayoutParams(-1,headerHeight,Gravity.TOP);frame.addView(header,headerParams);
- button("⚙ Настройки / О программе",()->showSettings()); theme(getPreferences(0).getInt("season",0));
+ button("⚙ Настройки / О программе",()->showSettings());
+ button("☷ Управление таблицами CRC",()->showTableManager()); theme(getPreferences(0).getInt("season",0));
  label("Список CAN ID");
  FrameLayout selectFrame=new FrameLayout(this);
  selectedCan=new TextView(this);selectedCan.setTextColor(Color.rgb(18,31,44));selectedCan.setTextSize(17);
@@ -224,7 +232,6 @@ public class MainActivity extends Activity {
  label("CAN данные (2–8 байт HEX)");data=new EditText(this);data.setSingleLine(true);data.setText("00 01 02 03 04 05 06 07");styleInput(data);page.addView(data);
  result=new TextView(this);result.setTextSize(18);result.setTextColor(Color.WHITE);result.setTextIsSelectable(true);
  button("РАССЧИТАТЬ CRC",()->{byte[] p=MQBCrc.parseHex(data.getText().toString());int crc=MQBCrc.calculate(currentId(),p);p[0]=(byte)crc;StringBuilder s=new StringBuilder(String.format(Locale.ROOT,"CRC: %02X\nCAN кадр: ",crc));for(byte x:p)s.append(String.format(Locale.ROOT,"%02X ",x&255));result.setText(s.toString());});page.addView(result);
- button("☷ Управление таблицами CRC",()->showTableManager());
  refresh();selectionReady=true;
  }
  String exportText(){StringBuilder s=new StringBuilder("VW_MQB_CRC_TABLES_V1\n");{TreeMap<Integer,int[]> all=new TreeMap<>(MQBCrc.builtinTables());all.putAll(MQBCrc.customTables());for(Map.Entry<Integer,int[]> e:all.entrySet())s.append(String.format(Locale.ROOT,"0x%X ",e.getKey())).append(MQBCrc.tableHex(e.getValue())).append('\n');}return s.toString();}
