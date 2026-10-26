@@ -175,18 +175,32 @@ public class MainActivity extends Activity {
   opacity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){public void onStartTrackingTouch(SeekBar b){}public void onStopTrackingTouch(SeekBar b){}public void onProgressChanged(SeekBar b,int p,boolean user){opacityLabel.setText("Затемнение фотографии: "+p+"%");}});
   Button about=new Button(this);about.setText("О программе и источники");content.addView(about);
   AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Настройки оформления").setView(sc).setNegativeButton("Отмена",null).setPositiveButton("Сохранить",(d,w)->{getPreferences(0).edit().putBoolean("photo",mode.getSelectedItemPosition()==0).putInt("season",ss.getSelectedItemPosition()).putInt("opacity",opacity.getProgress()).apply();theme(ss.getSelectedItemPosition());}).create();
-  about.setOnClickListener(v->new AlertDialog.Builder(this).setTitle("О программе • VW MQB CRC v5").setMessage(
- "Калькулятор CRC для CAN-сообщений Volkswagen MQB.\\n\\n"+
- "Основа идеи и таблиц: commaai/opendbc, ревизия 962c0c18e8b6638e62d786d6bebb08846b177ef4\\nhttps://github.com/commaai/opendbc/tree/962c0c18e8b6638e62d786d6bebb08846b177ef4\\n\\n"+
- "Код приложения сгенерирован с помощью нейросети OpenAI ChatGPT и требует независимой проверки перед применением к реальным системам автомобиля.\\n\\n"+
- "Фотографии: Wikimedia Commons (сохраняются права авторов):\\n"+
- "Зима — Svetlana Sibiryakova, Russia, Krasnoyarsk, Tundra 2022 - SS.jpg, CC BY-SA 4.0\\n"+
- "Весна — Dr. Andreas Hugentobler, Tundra in Siberia.jpg, CC BY 2.0 DE (условная сезонная иллюстрация)\\n"+
- "Лето — Ninaras, Siberian Tundra.jpg, CC BY 4.0\\n"+
- "Осень — Artem Abdukakharov, Arctic tundra in autumn colors near lake Lovozero in Murmansk Oblast, Russia.jpg, CC BY 4.0.\\n"+
- "Страницы лицензий и авторов: https://commons.wikimedia.org/wiki/File: (названия файлов выше). Лицензии: https://creativecommons.org/licenses/by/4.0/ ; https://creativecommons.org/licenses/by-sa/4.0/ ; https://creativecommons.org/licenses/by/2.0/de/ .\\n"+
- "Снимки могут быть обрезаны по размеру экрана, сами изображения не изменены."
- ).setPositiveButton("OK",null).show());
+  about.setOnClickListener(v->{
+  String aboutText=
+    "MQB CRC — калькулятор контрольной суммы CAN-сообщений Volkswagen MQB.\n\n"+
+    "ИСХОДНЫЙ ПРОЕКТ\n"+
+    "Алгоритм и таблицы основаны на открытом проекте commaai/opendbc, ревизия 962c0c1.\n"+
+    "https://github.com/commaai/opendbc/tree/962c0c18e8b6638e62d786d6bebb08846b177ef4\n\n"+
+    "РАЗРАБОТКА\n"+
+    "Код приложения сгенерирован с помощью нейросети OpenAI ChatGPT. Перед применением к реальным системам автомобиля необходима независимая проверка.\n\n"+
+    "ИСТОЧНИКИ ФОТОГРАФИЙ\n"+
+    "Wikimedia Commons. Права на изображения принадлежат их авторам.\n\n"+
+    "Зима: Svetlana Sibiryakova — Russia, Krasnoyarsk, Tundra 2022 - SS.jpg (CC BY-SA 4.0).\n\n"+
+    "Весна: Dr. Andreas Hugentobler — Tundra in Siberia.jpg (CC BY 2.0 DE).\n\n"+
+    "Лето: Ninaras — Siberian Tundra.jpg (CC BY 4.0).\n\n"+
+    "Осень: Artem Abdukakharov — Arctic tundra in autumn colors near lake Lovozero in Murmansk Oblast, Russia.jpg (CC BY 4.0).\n\n"+
+    "Ссылки на оригиналы: https://commons.wikimedia.org/ (по именам файлов).\n"+
+    "Лицензии: https://creativecommons.org/licenses/";
+  TextView details=new TextView(this);
+  details.setText(aboutText);details.setTextColor(Color.rgb(24,34,44));details.setTextSize(15);
+  int spacing=(int)(18*getResources().getDisplayMetrics().density);
+  details.setPadding(spacing,spacing,spacing,spacing);
+  details.setAutoLinkMask(android.text.util.Linkify.WEB_URLS);
+  details.setMovementMethod(android.text.method.LinkMovementMethod.getInstance());
+  ScrollView aboutScroll=new ScrollView(this);aboutScroll.addView(details);
+  new AlertDialog.Builder(this).setTitle("О программе • MQB CRC")
+    .setView(aboutScroll).setPositiveButton("Закрыть",null).show();
+ });
   dialog.show();
  }
  public void onCreate(Bundle b){super.onCreate(b);load();
