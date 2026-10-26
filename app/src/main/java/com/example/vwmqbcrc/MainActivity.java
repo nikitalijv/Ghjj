@@ -191,12 +191,12 @@ public class MainActivity extends Activity {
  }
  public void onCreate(Bundle b){super.onCreate(b);load();
  // Let the background photo extend into the transparent navigation-bar area.
- getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
- getWindow().setNavigationBarColor(Color.TRANSPARENT);
+ getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+ getWindow().setNavigationBarColor(Color.TRANSPARENT);getWindow().setStatusBarColor(Color.TRANSPARENT);
  if(android.os.Build.VERSION.SDK_INT>=29)getWindow().getAttributes().layoutInDisplayCutoutMode=android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
  int statusBarId=getResources().getIdentifier("status_bar_height","dimen","android");
  int statusBarHeight=statusBarId>0?getResources().getDimensionPixelSize(statusBarId):0;
- frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));int headerHeight=(int)(82*getResources().getDisplayMetrics().density);veil=new View(this);FrameLayout.LayoutParams veilParams=new FrameLayout.LayoutParams(-1,-1);veilParams.topMargin=headerHeight+statusBarHeight;frame.addView(veil,veilParams);ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);int navId=getResources().getIdentifier("navigation_bar_height","dimen","android");
+ frame=new FrameLayout(this);image=new ImageView(this);image.setScaleType(ImageView.ScaleType.CENTER_CROP);frame.addView(image,new FrameLayout.LayoutParams(-1,-1));View statusShade=new View(this);statusShade.setBackgroundColor(Color.argb(102,0,0,0));frame.addView(statusShade,new FrameLayout.LayoutParams(-1,statusBarHeight,Gravity.TOP));int headerHeight=(int)(82*getResources().getDisplayMetrics().density);veil=new View(this);FrameLayout.LayoutParams veilParams=new FrameLayout.LayoutParams(-1,-1);veilParams.topMargin=headerHeight+statusBarHeight;frame.addView(veil,veilParams);ScrollView scroll=new ScrollView(this);page=new LinearLayout(this);page.setOrientation(1);int navId=getResources().getIdentifier("navigation_bar_height","dimen","android");
  int navHeight=navId>0?getResources().getDimensionPixelSize(navId):0;
  page.setPadding(22,25,22,35+navHeight);scroll.addView(page);FrameLayout.LayoutParams contentParams=new FrameLayout.LayoutParams(-1,-1);contentParams.topMargin=headerHeight+statusBarHeight;frame.addView(scroll,contentParams);setContentView(frame);
  LinearLayout header=new LinearLayout(this);header.setOrientation(LinearLayout.HORIZONTAL);header.setGravity(Gravity.CENTER_VERTICAL);
@@ -235,8 +235,8 @@ public class MainActivity extends Activity {
  label("CAN ID (HEX)");id=new EditText(this);id.setSingleLine(true);id.setText("0x122");styleInput(id);page.addView(id);
  label("CAN данные (2–8 байт HEX)");data=new EditText(this);data.setSingleLine(true);data.setText("00 01 02 03 04 05 06 07");styleInput(data);page.addView(data);
  View calculateSpacing=new View(this);page.addView(calculateSpacing,new LinearLayout.LayoutParams(-1,(int)(16*getResources().getDisplayMetrics().density)));
- result=new TextView(this);result.setTextSize(18);result.setTextColor(Color.WHITE);result.setTextIsSelectable(true);
- button("РАССЧИТАТЬ CRC",()->{byte[] p=MQBCrc.parseHex(data.getText().toString());int crc=MQBCrc.calculate(currentId(),p);p[0]=(byte)crc;StringBuilder s=new StringBuilder(String.format(Locale.ROOT,"CRC: %02X\nCAN кадр: ",crc));for(byte x:p)s.append(String.format(Locale.ROOT,"%02X ",x&255));result.setText(s.toString());});page.addView(result);
+ result=new TextView(this);result.setTextSize(18);result.setTextColor(Color.rgb(18,31,44));result.setTextIsSelectable(true);result.setBackground(translucentField());int rp=(int)(16*getResources().getDisplayMetrics().density);result.setPadding(rp,rp,rp,rp);result.setVisibility(View.GONE);
+ button("РАССЧИТАТЬ CRC",()->{byte[] p=MQBCrc.parseHex(data.getText().toString());int crc=MQBCrc.calculate(currentId(),p);p[0]=(byte)crc;StringBuilder s=new StringBuilder(String.format(Locale.ROOT,"CRC: %02X\nCAN кадр: ",crc));for(byte x:p)s.append(String.format(Locale.ROOT,"%02X ",x&255));result.setText(s.toString());result.setVisibility(View.VISIBLE);});page.addView(result);
  refresh();selectionReady=true;
  }
  String exportText(){StringBuilder s=new StringBuilder("VW_MQB_CRC_TABLES_V1\n");{TreeMap<Integer,int[]> all=new TreeMap<>(MQBCrc.builtinTables());all.putAll(MQBCrc.customTables());for(Map.Entry<Integer,int[]> e:all.entrySet())s.append(String.format(Locale.ROOT,"0x%X ",e.getKey())).append(MQBCrc.tableHex(e.getValue())).append('\n');}return s.toString();}
